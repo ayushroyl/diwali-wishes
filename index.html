@@ -14,8 +14,19 @@
         <h1 class="greeting-text">✨ Happy Diwali ✨</h1>
         <h2 class="personalized-message" id="personalized-message">Wishing you prosperity, joy, and light!</h2>
         <h3 class="subtext">May your Diwali be as bright and colorful as the fireworks in the sky.</h3>
+        
+        <!-- Tap to Reveal Card -->
+        <div id="reveal-card" class="reveal-card" onclick="revealWishes()">
+            Tap to Reveal Your Diwali Wishes
+        </div>
+
+        <!-- WhatsApp Share Button -->
+        <div class="whatsapp-share" id="whatsapp-share" onclick="shareOnWhatsApp()">
+            Share on WhatsApp
+        </div>
+
         <div class="footer">
-            <p>- Ayush Roy</p>
+            <p id="author-text"></p>
         </div>
     </div>
 
@@ -27,6 +38,9 @@
             <button onclick="saveName()">Submit</button>
         </div>
     </div>
+
+    <!-- Audio for Background Music -->
+    <audio id="bg-music" src="diwali_music.mp3" loop></audio>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -42,7 +56,30 @@
             });
         });
 
-        // Name Popup and Greeting Logic
+        // Retrieve URL Parameters for Author and Wisher Names
+        const urlParams = new URLSearchParams(window.location.search);
+        const author = "Ayush Roy";
+        const wisher = urlParams.get("wisher");
+
+        // Personalize the Greeting if Wisher is Provided
+        window.onload = function() {
+            if (wisher) {
+                document.getElementById("personalized-message").innerHTML = `Wishing you, ${wisher}, prosperity, joy, and light!`;
+                document.getElementById("author-text").innerHTML = `- ${author}`;
+            } else {
+                const visitorName = localStorage.getItem("visitorName");
+                if (visitorName) {
+                    document.getElementById("personalized-message").innerHTML = 
+                        `Wishing you, ${visitorName}, prosperity, joy, and light!`;
+                    document.getElementById("name-popup").style.display = "none";
+                    document.getElementById("author-text").innerHTML = `- ${author}`;
+                } else {
+                    document.getElementById("name-popup").style.display = "flex";
+                }
+            }
+        };
+
+        // Save the Visitor's Name and Display Greeting
         function saveName() {
             const name = document.getElementById("username").value;
             if (name) {
@@ -50,19 +87,24 @@
                 document.getElementById("personalized-message").innerHTML = 
                     `Wishing you, ${name}, prosperity, joy, and light!`;
                 document.getElementById("name-popup").style.display = "none";
+                document.getElementById("author-text").innerHTML = `- ${author}`;
             }
         }
 
-        window.onload = function() {
-            const visitorName = localStorage.getItem("visitorName");
-            if (visitorName) {
-                document.getElementById("personalized-message").innerHTML = 
-                    `Wishing you, ${visitorName}, prosperity, joy, and light!`;
-                document.getElementById("name-popup").style.display = "none";
-            } else {
-                document.getElementById("name-popup").style.display = "flex";
-            }
-        };
+        // Reveal Wishes and Play Background Music
+        function revealWishes() {
+            document.getElementById("reveal-card").style.display = "none";
+            document.getElementById("bg-music").play();
+            alert("May your Diwali be filled with light, joy, and prosperity!");
+        }
+
+        // Share on WhatsApp with Custom URL
+        function shareOnWhatsApp() {
+            const visitorName = localStorage.getItem("visitorName") || wisher;
+            const shareUrl = `${window.location.origin + window.location.pathname}?wisher=${visitorName}`;
+            const message = `✨ Happy Diwali ✨\nWishing you, ${visitorName}, a joyful and prosperous Diwali! Check out your personalized Diwali wish at: ${shareUrl}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+        }
     </script>
 </body>
 </html>
