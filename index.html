@@ -23,17 +23,13 @@
         .whatsapp-share:hover {
             background-color: #1ebe57;
         }
-
+        
         /* Footer styling */
         .footer {
-            font-size: 12px;
-            color: #555;
-            text-align: center;
             margin-top: 20px;
-        }
-        .footer small {
-            display: inline-block;
+            font-size: 12px;
             color: #888;
+            text-align: center;
         }
     </style>
 </head>
@@ -51,14 +47,14 @@
             Share on WhatsApp
         </a>
 
-        <!-- Optional Footer -->
         <div class="footer">
-            <small>Made with ❤️ by Ayush</small>
+            <p id="author-text"></p>
+            <p>Made with ❤️ by Ayush</p>
         </div>
     </div>
 
     <!-- Ask User for Name -->
-    <div class="name-popup" id="name-popup">
+    <div class="name-popup" id="name-popup" style="display: flex;">
         <div class="name-popup-content">
             <h2>What's your name?</h2>
             <input type="text" id="username" placeholder="Enter your name" autofocus>
@@ -110,22 +106,23 @@
         // Save the Visitor's Name, Display Greeting, and Play Music
         function saveName() {
             const name = document.getElementById("username").value;
-            if (name) {
-                localStorage.setItem("visitorName", name);
+            if (name.trim()) { // Check if name is not empty or just spaces
+                localStorage.setItem("visitorName", name); // Save name to localStorage
                 document.getElementById("personalized-message").innerHTML = 
                     `Wishing you, ${name}, prosperity, joy, and light!`;
                 document.getElementById("author-text").innerHTML = `- ${author}`;
-                document.getElementById("name-popup").style.display = "none";
-                document.getElementById("bg-music").play();
+                document.getElementById("name-popup").style.display = "none"; // Hide the popup
+                document.getElementById("bg-music").play(); // Start background music
+            } else {
+                alert("Please enter a valid name."); // Alert if name is empty
             }
         }
 
         // Share on WhatsApp with Custom URL
         function shareOnWhatsApp() {
-            const visitorName = localStorage.getItem("visitorName") || wisher || "Your friend";
-            const newAuthor = visitorName; // Set the visitor's name as the new author
-            const shareUrl = `${window.location.origin + window.location.pathname}?author=${newAuthor}`;
-            const message = `✨ Happy Diwali ✨\n${newAuthor} is wishing you a joyful and prosperous Diwali! Check out your personalized Diwali wish at: ${shareUrl}`;
+            const visitorName = localStorage.getItem("visitorName") || wisher;
+            const shareUrl = `${window.location.origin + window.location.pathname}?author=${visitorName}`;
+            const message = `✨ Happy Diwali ✨\nWishing you, ${author}, a joyful and prosperous Diwali! Check out your personalized Diwali wish at: ${shareUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
     </script>
