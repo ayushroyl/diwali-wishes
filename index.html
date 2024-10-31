@@ -110,7 +110,7 @@
         // Share on WhatsApp with Custom URL
         function shareOnWhatsApp() {
             const visitorName = localStorage.getItem("visitorName") || wisher;
-            const shareUrl = `${window.location.origin + window.location.pathname}?wisher=${visitorName}&author=${author}`;
+            const shareUrl = `${window.location.origin + window.location.pathname}?author=${author}`;
             const message = `✨ Happy Diwali ✨\nWishing you, ${visitorName}, a joyful and prosperous Diwali! Check out your personalized Diwali wish at: ${shareUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
