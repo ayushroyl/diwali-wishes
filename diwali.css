@@ -9,7 +9,7 @@ body, html {
     height: 100%;
     overflow: hidden;
     background: transparent;
-    color: #ffffff;
+    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
