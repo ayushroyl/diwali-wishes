@@ -6,10 +6,9 @@
     <title>Happy Diwali Wishes</title>
     <link rel="stylesheet" href="diwali.css">
     <style>
-        /* WhatsApp button styling */
         .whatsapp-share {
             display: inline-block;
-            background-color: #25D366; /* WhatsApp green */
+            background-color: #25D366;
             color: white;
             padding: 10px 20px;
             font-size: 16px;
@@ -23,59 +22,66 @@
         .whatsapp-share:hover {
             background-color: #1ebe57;
         }
+        .name-popup, .author-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="fireworks" id="fireworks"></div>
-
-    <!-- Main Content Area -->
     <div class="greeting-container" id="greeting-container">
         <h1 class="greeting-text">✨ Happy Diwali ✨</h1>
         <h2 class="personalized-message" id="personalized-message">Wishing you prosperity, joy, and light!</h2>
         <h3 class="subtext">May your Diwali be as bright and colorful as the fireworks in the sky.</h3>
-
-        <!-- WhatsApp Share Button -->
-        <a class="whatsapp-share" id="whatsapp-share" onclick="shareOnWhatsApp()">
-            Share on WhatsApp
-        </a>
-
+        <a class="whatsapp-share" id="whatsapp-share" onclick="openAuthorPopup()">Share on WhatsApp</a>
         <div class="footer">
             <p id="author-text"></p>
         </div>
     </div>
 
-    <!-- Ask User for Name -->
     <div class="name-popup" id="name-popup">
-        <div class="name-popup-content">
+        <div class="popup-content">
             <h2>What's your name?</h2>
             <input type="text" id="username" placeholder="Enter your name" autofocus>
             <button onclick="saveName()">Submit</button>
         </div>
     </div>
 
-    <!-- Audio for Background Music -->
+    <div class="author-popup" id="author-popup">
+        <div class="popup-content">
+            <h2>Enter your name as author</h2>
+            <input type="text" id="authorNameInput" placeholder="Your name as author">
+            <button onclick="shareOnWhatsApp()">Share</button>
+        </div>
+    </div>
+
     <audio id="bg-music" src="diwali_music.mp3" loop></audio>
 
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="jquery.fireworks.js"></script>
     <script type="text/javascript">
-        // Fireworks effect
         $(document).ready(function() {
-            $('#fireworks').fireworks({ 
-                sound: true, 
-                opacity: 0.8, 
-                width: '100%', 
-                height: '100%' 
-            });
+            $('#fireworks').fireworks({ sound: true, opacity: 0.8, width: '100%', height: '100%' });
         });
 
-        // Retrieve URL Parameters for Author and Wisher Names
         const urlParams = new URLSearchParams(window.location.search);
-        const author = urlParams.get("author") || "Ayush Roy"; // Default to "Ayush Roy"
+        const author = urlParams.get("author") || "Ayush Roy";
         const wisher = urlParams.get("wisher");
 
-        // Personalize the Greeting if Wisher is Provided
         window.onload = function() {
             if (wisher) {
                 document.getElementById("personalized-message").innerHTML = `Wishing you, ${wisher}, prosperity, joy, and light!`;
@@ -94,7 +100,6 @@
             }
         };
 
-        // Save the Visitor's Name, Display Greeting, and Play Music
         function saveName() {
             const name = document.getElementById("username").value;
             if (name) {
@@ -107,11 +112,16 @@
             }
         }
 
-        // Share on WhatsApp with Custom URL
+        function openAuthorPopup() {
+            document.getElementById("author-popup").style.display = "flex";
+        }
+
         function shareOnWhatsApp() {
             const visitorName = localStorage.getItem("visitorName") || wisher;
-            const shareUrl = `${window.location.origin + window.location.pathname}?author=${wisher}`;
+            const authorName = document.getElementById("authorNameInput").value || "Ayush Roy";
+            const shareUrl = `${window.location.origin + window.location.pathname}?author=${authorName}`;
             const message = `✨ Happy Diwali ✨\nWishing you, ${visitorName}, a joyful and prosperous Diwali! Check out your personalized Diwali wish at: ${shareUrl}`;
+            document.getElementById("author-popup").style.display = "none";
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
     </script>
